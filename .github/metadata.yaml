@@ -1,0 +1,10 @@
+# .github/metadata.yaml
+# Triaged by AI-assisted bulk pass (2026-04-29).
+description: "Swift implementation of ISO 3166: Country codes."
+topics:
+  - standards
+  - iso
+  - iso-3166
+  - country-codes
+  - internationalization
+homepage: "https://swift-institute.org"
