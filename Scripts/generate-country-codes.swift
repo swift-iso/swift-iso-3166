@@ -31,7 +31,7 @@ func escapeIfNeeded(_ code: String) -> String {
 // MARK: - Load Data
 
 func loadCountries() throws -> [Country] {
-    let resourcesPath = "Sources/ISO 3166/Resources/iso-3166-1.json"
+    let resourcesPath = "Sources/ISO 3166/Data/iso-3166-1.json"
     let data = try Data(contentsOf: URL(fileURLWithPath: resourcesPath))
     return try JSONDecoder().decode([Country].self, from: data)
 }
