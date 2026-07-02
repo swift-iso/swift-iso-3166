@@ -27,7 +27,7 @@ Add this package as a dependency in your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-standards/swift-iso-3166", from: "0.1.0")
+    .package(url: "https://github.com/swift-iso/swift-iso-3166", from: "0.2.4")
 ]
 ```
 
@@ -191,7 +191,7 @@ Country codes are sourced from the United Nations Statistics Division, which mai
 ## Dependencies
 
 - [swift-standards](https://github.com/swift-standards/swift-standards): Common standards utilities
-- [swift-incits-4-1986](https://github.com/swift-standards/swift-incits-4-1986): ASCII character classification
+- [swift-incits-4-1986](https://github.com/swift-incits/swift-incits-4-1986): ASCII character classification
 
 ## License
 
@@ -199,7 +199,7 @@ This package implements the ISO 3166-1 standard. The ISO 3166-1 codes are availa
 
 ## Related Standards
 
-- [ISO 639](https://github.com/swift-standards/swift-iso-639): Language codes
+- [ISO 639](https://github.com/swift-iso/swift-iso-639): Language codes
 - [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2): Country subdivision codes
 - [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217): Currency codes
 
