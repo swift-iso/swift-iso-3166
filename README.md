@@ -33,6 +33,17 @@ dependencies: [
 ]
 ```
 
+Add the product to a target that needs it:
+
+```swift
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "ISO 3166", package: "swift-iso-3166")
+    ]
+)
+```
+
 ## Usage
 
 ### Creating Country Codes
