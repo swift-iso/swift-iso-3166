@@ -1,5 +1,7 @@
 # swift-iso-3166
 
+![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+
 Type-safe Swift implementation of ISO 3166-1 country codes.
 
 ## Overview
