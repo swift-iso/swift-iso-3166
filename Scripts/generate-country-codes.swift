@@ -28,12 +28,43 @@ func escapeIfNeeded(_ code: String) -> String {
     swiftKeywords.contains(code.lowercased()) ? "`\(code)`" : code
 }
 
+// MARK: - Script Errors
+
+/// This single-file script already declares `Country` as its one type
+/// ([API-IMPL-005] permits exactly one); conforming `String` to `Error`
+/// via extension (not a new type declaration) gives every throwing helper
+/// below a concrete, named error type to satisfy [API-ERR-001] without
+/// adding a second nominal type to this file.
+extension Swift.String: Swift.Error {}
+
 // MARK: - Load Data
 
-func loadCountries() throws -> [Country] {
+func loadCountries() throws(Swift.String) -> [Country] {
     let resourcesPath = "Sources/ISO 3166/Resources/iso-3166-1.json"
-    let data = try Data(contentsOf: URL(fileURLWithPath: resourcesPath))
-    return try JSONDecoder().decode([Country].self, from: data)
+    // swift-linter:disable:next do throws for typed catch
+    // REASON: callee is untyped-throwing — `Data(contentsOf:)` and
+    // `JSONDecoder.decode` are Foundation APIs declared bare `throws`
+    // with no typed-throws variant to preserve.
+    do {
+        let data = try Data(contentsOf: URL(fileURLWithPath: resourcesPath))
+        return try JSONDecoder().decode([Country].self, from: data)
+    } catch {
+        throw "Failed to load countries from \(resourcesPath): \(error)"
+    }
+}
+
+/// Writes `content` to `file`, wrapping `String.write(toFile:atomically:encoding:)`'s
+/// untyped Foundation error into a typed `String` message so every call
+/// site downstream stays on typed throws.
+func write(_ content: String, toFile file: String) throws(Swift.String) {
+    // swift-linter:disable:next do throws for typed catch
+    // REASON: callee is untyped-throwing — `String.write(toFile:atomically:encoding:)`
+    // is a Foundation API declared bare `throws` with no typed-throws variant.
+    do {
+        try content.write(toFile: file, atomically: true, encoding: .utf8)
+    } catch {
+        throw "Failed to write \(file): \(error)"
+    }
 }
 
 // MARK: - Code Generation
@@ -192,9 +223,9 @@ func generateAlpha2CaseIterable(countries: [Country]) -> String {
     """
 
     let sortedCountries = countries.sorted(by: { $0.alpha2 < $1.alpha2 })
-    for (index, country) in sortedCountries.enumerated() {
+    for (offset, country) in sortedCountries.enumerated() {
         let codeEscaped = escapeIfNeeded(country.alpha2.lowercased())
-        let comma = index < sortedCountries.count - 1 ? "," : ""
+        let comma = offset == sortedCountries.indices.last ? "" : ","
         output += "        .\(codeEscaped)\(comma)\n"
     }
 
@@ -223,9 +254,9 @@ func generateAlpha3CaseIterable(countries: [Country]) -> String {
     """
 
     let sortedCountries = countries.sorted(by: { $0.alpha3 < $1.alpha3 })
-    for (index, country) in sortedCountries.enumerated() {
+    for (offset, country) in sortedCountries.enumerated() {
         let codeEscaped = escapeIfNeeded(country.alpha3.lowercased())
-        let comma = index < sortedCountries.count - 1 ? "," : ""
+        let comma = offset == sortedCountries.indices.last ? "" : ","
         output += "        .\(codeEscaped)\(comma)\n"
     }
 
@@ -254,8 +285,8 @@ func generateNumericCaseIterable(countries: [Country]) -> String {
     """
 
     let sortedCountries = countries.sorted(by: { $0.numeric < $1.numeric })
-    for (index, country) in sortedCountries.enumerated() {
-        let comma = index < sortedCountries.count - 1 ? "," : ""
+    for (offset, country) in sortedCountries.enumerated() {
+        let comma = offset == sortedCountries.indices.last ? "" : ","
         output += "        .`\(country.numeric)`\(comma)\n"
     }
 
@@ -269,7 +300,7 @@ func generateNumericCaseIterable(countries: [Country]) -> String {
 
 // MARK: - Main
 
-do {
+do throws(Swift.String) {
     print("Loading country codes...")
     let countries = try loadCountries()
     print("Loaded \(countries.count) countries")
@@ -280,33 +311,33 @@ do {
 
     // Generate mappings
     let countryCodes = generateCountryCodes(countries: countries)
-    try countryCodes.write(toFile: "\(generatedDir)/ISO_3166.CountryCodes.swift", atomically: true, encoding: .utf8)
+    try write(countryCodes, toFile: "\(generatedDir)/ISO_3166.CountryCodes.swift")
     print("✓ Generated ISO_3166.CountryCodes.swift")
 
     // Generate static accessors
     let alpha2Accessors = generateAlpha2StaticAccessors(countries: countries)
-    try alpha2Accessors.write(toFile: "\(generatedDir)/ISO_3166.Alpha2+StaticAccessors.swift", atomically: true, encoding: .utf8)
+    try write(alpha2Accessors, toFile: "\(generatedDir)/ISO_3166.Alpha2+StaticAccessors.swift")
     print("✓ Generated ISO_3166.Alpha2+StaticAccessors.swift")
 
     let alpha3Accessors = generateAlpha3StaticAccessors(countries: countries)
-    try alpha3Accessors.write(toFile: "\(generatedDir)/ISO_3166.Alpha3+StaticAccessors.swift", atomically: true, encoding: .utf8)
+    try write(alpha3Accessors, toFile: "\(generatedDir)/ISO_3166.Alpha3+StaticAccessors.swift")
     print("✓ Generated ISO_3166.Alpha3+StaticAccessors.swift")
 
     let numericAccessors = generateNumericStaticAccessors(countries: countries)
-    try numericAccessors.write(toFile: "\(generatedDir)/ISO_3166.Numeric+StaticAccessors.swift", atomically: true, encoding: .utf8)
+    try write(numericAccessors, toFile: "\(generatedDir)/ISO_3166.Numeric+StaticAccessors.swift")
     print("✓ Generated ISO_3166.Numeric+StaticAccessors.swift")
 
     // Generate CaseIterable conformances
     let alpha2CaseIterable = generateAlpha2CaseIterable(countries: countries)
-    try alpha2CaseIterable.write(toFile: "\(generatedDir)/ISO_3166.Alpha2+CaseIterable.swift", atomically: true, encoding: .utf8)
+    try write(alpha2CaseIterable, toFile: "\(generatedDir)/ISO_3166.Alpha2+CaseIterable.swift")
     print("✓ Generated ISO_3166.Alpha2+CaseIterable.swift")
 
     let alpha3CaseIterable = generateAlpha3CaseIterable(countries: countries)
-    try alpha3CaseIterable.write(toFile: "\(generatedDir)/ISO_3166.Alpha3+CaseIterable.swift", atomically: true, encoding: .utf8)
+    try write(alpha3CaseIterable, toFile: "\(generatedDir)/ISO_3166.Alpha3+CaseIterable.swift")
     print("✓ Generated ISO_3166.Alpha3+CaseIterable.swift")
 
     let numericCaseIterable = generateNumericCaseIterable(countries: countries)
-    try numericCaseIterable.write(toFile: "\(generatedDir)/ISO_3166.Numeric+CaseIterable.swift", atomically: true, encoding: .utf8)
+    try write(numericCaseIterable, toFile: "\(generatedDir)/ISO_3166.Numeric+CaseIterable.swift")
     print("✓ Generated ISO_3166.Numeric+CaseIterable.swift")
 
     print("\n✅ Code generation complete!")

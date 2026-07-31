@@ -6,8 +6,18 @@ import Testing
 
 @testable import ISO_3166
 
-@Suite("ISO 3166 Country Codes")
-struct ISO3166Tests {
+extension ISO_3166 {
+    @Suite("ISO 3166 Country Codes")
+    struct Tests {
+        @Suite struct Unit {}
+        @Suite struct `Edge Case` {}
+        @Suite struct Integration {}
+    }
+}
+
+// MARK: - Unit
+
+extension ISO_3166.Tests.Unit {
 
     // MARK: - Alpha2 Tests
 
@@ -294,6 +304,52 @@ struct ISO3166Tests {
         #expect(decoded.value == "840")
     }
 
+    // MARK: - CaseIterable Tests
+
+    @Test
+    func `CaseIterable: Alpha2 has all 249 codes`() {
+        #expect(ISO_3166.Alpha2.allCases.count == 249)
+        #expect(ISO_3166.Alpha2.allCases.contains(.us))
+        #expect(ISO_3166.Alpha2.allCases.contains(.gb))
+    }
+
+    @Test
+    func `CaseIterable: Alpha3 has all 249 codes`() {
+        #expect(ISO_3166.Alpha3.allCases.count == 249)
+        #expect(ISO_3166.Alpha3.allCases.contains(.usa))
+        #expect(ISO_3166.Alpha3.allCases.contains(.gbr))
+    }
+
+    @Test
+    func `CaseIterable: Numeric has all 249 codes`() {
+        #expect(ISO_3166.Numeric.allCases.count == 249)
+        #expect(ISO_3166.Numeric.allCases.contains(.`840`))
+        #expect(ISO_3166.Numeric.allCases.contains(.`826`))
+    }
+}
+
+// MARK: - Edge Case
+
+extension ISO_3166.Tests.`Edge Case` {
+
+    @Test
+    func `ISO 3166: Edge case countries`() throws {
+        // Antarctica
+        let aq = try ISO_3166.Alpha2("aq")
+        let ata = ISO_3166.Alpha3(aq)
+        #expect(ata.value == "ata")
+
+        // Vatican City
+        let va = try ISO_3166.Alpha2("va")
+        let vat = ISO_3166.Alpha3(va)
+        #expect(vat.value == "vat")
+    }
+}
+
+// MARK: - Integration
+
+extension ISO_3166.Tests.Integration {
+
     // MARK: - Conversion Tests
 
     @Test
@@ -356,29 +412,6 @@ struct ISO3166Tests {
         #expect(roundtrip == original)
     }
 
-    // MARK: - CaseIterable Tests
-
-    @Test
-    func `CaseIterable: Alpha2 has all 249 codes`() {
-        #expect(ISO_3166.Alpha2.allCases.count == 249)
-        #expect(ISO_3166.Alpha2.allCases.contains(.us))
-        #expect(ISO_3166.Alpha2.allCases.contains(.gb))
-    }
-
-    @Test
-    func `CaseIterable: Alpha3 has all 249 codes`() {
-        #expect(ISO_3166.Alpha3.allCases.count == 249)
-        #expect(ISO_3166.Alpha3.allCases.contains(.usa))
-        #expect(ISO_3166.Alpha3.allCases.contains(.gbr))
-    }
-
-    @Test
-    func `CaseIterable: Numeric has all 249 codes`() {
-        #expect(ISO_3166.Numeric.allCases.count == 249)
-        #expect(ISO_3166.Numeric.allCases.contains(.`840`))
-        #expect(ISO_3166.Numeric.allCases.contains(.`826`))
-    }
-
     // MARK: - Specific Countries
 
     @Test
@@ -410,19 +443,6 @@ struct ISO3166Tests {
         let de276 = ISO_3166.Numeric(de)
         #expect(deu.value == "deu")
         #expect(de276.value == "276")
-    }
-
-    @Test
-    func `ISO 3166: Edge case countries`() throws {
-        // Antarctica
-        let aq = try ISO_3166.Alpha2("aq")
-        let ata = ISO_3166.Alpha3(aq)
-        #expect(ata.value == "ata")
-
-        // Vatican City
-        let va = try ISO_3166.Alpha2("va")
-        let vat = ISO_3166.Alpha3(va)
-        #expect(vat.value == "vat")
     }
 
     // MARK: - Code Tests (All Formats)

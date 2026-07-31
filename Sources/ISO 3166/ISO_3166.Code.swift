@@ -52,8 +52,10 @@ extension ISO_3166.Code: CustomStringConvertible {
         switch self {
         case .alpha2(let code):
             return code.value
+
         case .alpha3(let code):
             return code.value
+
         case .numeric(let code):
             return code.value
         }
@@ -124,11 +126,19 @@ extension ISO_3166.Code {
 // MARK: - Codable
 
 extension ISO_3166.Code: Codable {
+    // REASON: `Swift.Encodable.encode(to:)` is declared with untyped `throws`
+    // upstream; a conforming implementation is signature-forced and cannot
+    // express `throws(E)`.
+    // swiftlint:disable:next typed_throws_required
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(description)
     }
 
+    // REASON: `Swift.Decodable.init(from:)` is declared with untyped `throws`
+    // upstream; a conforming implementation is signature-forced and cannot
+    // express `throws(E)`.
+    // swiftlint:disable:next typed_throws_required
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
