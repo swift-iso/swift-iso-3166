@@ -1,5 +1,4 @@
 #!/usr/bin/env swift
-
 import Foundation
 
 // MARK: - Data Structures
@@ -20,7 +19,7 @@ let swiftKeywords: Set<String> = [
     "for", "func", "guard", "if", "import", "in", "init", "inout", "internal",
     "is", "let", "nil", "operator", "private", "protocol", "public", "repeat",
     "return", "self", "Self", "static", "struct", "subscript", "super", "switch",
-    "throw", "throws", "true", "try", "typealias", "var", "where", "while"
+    "throw", "throws", "true", "try", "typealias", "var", "where", "while",
 ]
 
 /// Escapes a code if it's a Swift keyword
@@ -71,27 +70,27 @@ func write(_ content: String, toFile file: String) throws(Swift.String) {
 
 func generateCountryCodes(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.CountryCodes.swift
-    // ISO 3166
-    //
-    // Country code data and mappings
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.CountryCodes.swift
+        // ISO 3166
+        //
+        // Country code data and mappings
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    import Standards
+        import Standards
 
-    extension ISO_3166 {
-        /// Mapping from ISO 3166-1 alpha-2 (2-letter) to alpha-3 (3-letter) codes
-        ///
-        /// Complete ISO 3166-1 standard (249 codes) with their alpha-3 equivalents.
-        ///
-        /// ## Data Source
-        /// Generated from authoritative UN Statistics Division ISO 3166-1 data.
-        internal static let alpha2ToAlpha3: [Alpha2: Alpha3] = [
+        extension ISO_3166 {
+            /// Mapping from ISO 3166-1 alpha-2 (2-letter) to alpha-3 (3-letter) codes
+            ///
+            /// Complete ISO 3166-1 standard (249 codes) with their alpha-3 equivalents.
+            ///
+            /// ## Data Source
+            /// Generated from authoritative UN Statistics Division ISO 3166-1 data.
+            internal static let alpha2ToAlpha3: [Alpha2: Alpha3] = [
 
-    """
+        """
 
     for country in countries.sorted(by: { $0.alpha2 < $1.alpha2 }) {
         let alpha2Escaped = escapeIfNeeded(country.alpha2.lowercased())
@@ -100,17 +99,17 @@ func generateCountryCodes(countries: [Country]) -> String {
     }
 
     output += """
-        ]
+            ]
 
-        /// Mapping from ISO 3166-1 alpha-3 (3-letter) to alpha-2 (2-letter) codes
-        internal static let alpha3ToAlpha2: [Alpha3: Alpha2] = {
-            Dictionary(uniqueKeysWithValues: alpha2ToAlpha3.map { ($1, $0) })
-        }()
+            /// Mapping from ISO 3166-1 alpha-3 (3-letter) to alpha-2 (2-letter) codes
+            internal static let alpha3ToAlpha2: [Alpha3: Alpha2] = {
+                Dictionary(uniqueKeysWithValues: alpha2ToAlpha3.map { ($1, $0) })
+            }()
 
-        /// Mapping from ISO 3166-1 alpha-2 (2-letter) to numeric codes
-        internal static let alpha2ToNumeric: [Alpha2: Numeric] = [
+            /// Mapping from ISO 3166-1 alpha-2 (2-letter) to numeric codes
+            internal static let alpha2ToNumeric: [Alpha2: Numeric] = [
 
-    """
+        """
 
     for country in countries.sorted(by: { $0.alpha2 < $1.alpha2 }) {
         let alpha2Escaped = escapeIfNeeded(country.alpha2.lowercased())
@@ -118,38 +117,39 @@ func generateCountryCodes(countries: [Country]) -> String {
     }
 
     output += """
-        ]
+            ]
 
-        /// Mapping from ISO 3166-1 numeric to alpha-2 (2-letter) codes
-        internal static let numericToAlpha2: [Numeric: Alpha2] = {
-            Dictionary(uniqueKeysWithValues: alpha2ToNumeric.map { ($1, $0) })
-        }()
-    }
+            /// Mapping from ISO 3166-1 numeric to alpha-2 (2-letter) codes
+            internal static let numericToAlpha2: [Numeric: Alpha2] = {
+                Dictionary(uniqueKeysWithValues: alpha2ToNumeric.map { ($1, $0) })
+            }()
+        }
 
-    """
+        """
 
     return output
 }
 
 func generateAlpha2StaticAccessors(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Alpha2+StaticAccessors.swift
-    // ISO 3166
-    //
-    // Static accessors for all ISO 3166-1 alpha-2 (2-letter) country codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Alpha2+StaticAccessors.swift
+        // ISO 3166
+        //
+        // Static accessors for all ISO 3166-1 alpha-2 (2-letter) country codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Alpha2 {
+        extension ISO_3166.Alpha2 {
 
-    """
+        """
 
     for country in countries.sorted(by: { $0.alpha2 < $1.alpha2 }) {
         let codeEscaped = escapeIfNeeded(country.alpha2.lowercased())
         output += "    /// \(country.name)\n"
-        output += "    public static let \(codeEscaped) = ISO_3166.Alpha2(unchecked: \"\(country.alpha2.lowercased())\")\n\n"
+        output +=
+            "    public static let \(codeEscaped) = ISO_3166.Alpha2(unchecked: \"\(country.alpha2.lowercased())\")\n\n"
     }
 
     output += "}\n"
@@ -158,23 +158,24 @@ func generateAlpha2StaticAccessors(countries: [Country]) -> String {
 
 func generateAlpha3StaticAccessors(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Alpha3+StaticAccessors.swift
-    // ISO 3166
-    //
-    // Static accessors for all ISO 3166-1 alpha-3 (3-letter) country codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Alpha3+StaticAccessors.swift
+        // ISO 3166
+        //
+        // Static accessors for all ISO 3166-1 alpha-3 (3-letter) country codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Alpha3 {
+        extension ISO_3166.Alpha3 {
 
-    """
+        """
 
     for country in countries.sorted(by: { $0.alpha3 < $1.alpha3 }) {
         let codeEscaped = escapeIfNeeded(country.alpha3.lowercased())
         output += "    /// \(country.name)\n"
-        output += "    public static let \(codeEscaped) = ISO_3166.Alpha3(unchecked: \"\(country.alpha3.lowercased())\")\n\n"
+        output +=
+            "    public static let \(codeEscaped) = ISO_3166.Alpha3(unchecked: \"\(country.alpha3.lowercased())\")\n\n"
     }
 
     output += "}\n"
@@ -183,23 +184,24 @@ func generateAlpha3StaticAccessors(countries: [Country]) -> String {
 
 func generateNumericStaticAccessors(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Numeric+StaticAccessors.swift
-    // ISO 3166
-    //
-    // Static accessors for all ISO 3166-1 numeric country codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Numeric+StaticAccessors.swift
+        // ISO 3166
+        //
+        // Static accessors for all ISO 3166-1 numeric country codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Numeric {
+        extension ISO_3166.Numeric {
 
-    """
+        """
 
     for country in countries.sorted(by: { $0.numeric < $1.numeric }) {
         // Use backticks for numeric constants (Swift 6.2+)
         output += "    /// \(country.name)\n"
-        output += "    public static let `\(country.numeric)` = ISO_3166.Numeric(unchecked: \"\(country.numeric)\")\n\n"
+        output +=
+            "    public static let `\(country.numeric)` = ISO_3166.Numeric(unchecked: \"\(country.numeric)\")\n\n"
     }
 
     output += "}\n"
@@ -208,19 +210,19 @@ func generateNumericStaticAccessors(countries: [Country]) -> String {
 
 func generateAlpha2CaseIterable(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Alpha2+CaseIterable.swift
-    // ISO 3166
-    //
-    // CaseIterable conformance for ISO 3166-1 alpha-2 (2-letter) codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Alpha2+CaseIterable.swift
+        // ISO 3166
+        //
+        // CaseIterable conformance for ISO 3166-1 alpha-2 (2-letter) codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Alpha2: CaseIterable {
-        public static let allCases: [ISO_3166.Alpha2] = [
+        extension ISO_3166.Alpha2: CaseIterable {
+            public static let allCases: [ISO_3166.Alpha2] = [
 
-    """
+        """
 
     let sortedCountries = countries.sorted(by: { $0.alpha2 < $1.alpha2 })
     for (offset, country) in sortedCountries.enumerated() {
@@ -230,28 +232,28 @@ func generateAlpha2CaseIterable(countries: [Country]) -> String {
     }
 
     output += """
-        ]
-    }
+            ]
+        }
 
-    """
+        """
     return output
 }
 
 func generateAlpha3CaseIterable(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Alpha3+CaseIterable.swift
-    // ISO 3166
-    //
-    // CaseIterable conformance for ISO 3166-1 alpha-3 (3-letter) codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Alpha3+CaseIterable.swift
+        // ISO 3166
+        //
+        // CaseIterable conformance for ISO 3166-1 alpha-3 (3-letter) codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Alpha3: CaseIterable {
-        public static let allCases: [ISO_3166.Alpha3] = [
+        extension ISO_3166.Alpha3: CaseIterable {
+            public static let allCases: [ISO_3166.Alpha3] = [
 
-    """
+        """
 
     let sortedCountries = countries.sorted(by: { $0.alpha3 < $1.alpha3 })
     for (offset, country) in sortedCountries.enumerated() {
@@ -261,28 +263,28 @@ func generateAlpha3CaseIterable(countries: [Country]) -> String {
     }
 
     output += """
-        ]
-    }
+            ]
+        }
 
-    """
+        """
     return output
 }
 
 func generateNumericCaseIterable(countries: [Country]) -> String {
     var output = """
-    // ISO_3166.Numeric+CaseIterable.swift
-    // ISO 3166
-    //
-    // CaseIterable conformance for ISO 3166-1 numeric codes
-    //
-    // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
-    // Generated from JSON data files using Scripts/generate-country-codes.swift
-    // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
+        // ISO_3166.Numeric+CaseIterable.swift
+        // ISO 3166
+        //
+        // CaseIterable conformance for ISO 3166-1 numeric codes
+        //
+        // ⚠️ AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+        // Generated from JSON data files using Scripts/generate-country-codes.swift
+        // To update: modify JSON files in Resources/ then run: swift Scripts/generate-country-codes.swift
 
-    extension ISO_3166.Numeric: CaseIterable {
-        public static let allCases: [ISO_3166.Numeric] = [
+        extension ISO_3166.Numeric: CaseIterable {
+            public static let allCases: [ISO_3166.Numeric] = [
 
-    """
+        """
 
     let sortedCountries = countries.sorted(by: { $0.numeric < $1.numeric })
     for (offset, country) in sortedCountries.enumerated() {
@@ -291,10 +293,10 @@ func generateNumericCaseIterable(countries: [Country]) -> String {
     }
 
     output += """
-        ]
-    }
+            ]
+        }
 
-    """
+        """
     return output
 }
 

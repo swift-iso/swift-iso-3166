@@ -2,8 +2,6 @@
 
 import PackageDescription
 
-
-
 extension String {
     static let iso3166: Self = "ISO 3166"
 }
@@ -12,8 +10,12 @@ extension String { var tests: Self { self + " Tests" } }
 
 extension Target.Dependency {
     static var iso3166: Self { .target(name: .iso3166) }
-    static var standards: Self { .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions") }
-    static var incits_4_1986: Self { .product(name: "ASCII Primitives", package: "swift-ascii-primitives") }
+    static var standards: Self {
+        .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions")
+    }
+    static var incits_4_1986: Self {
+        .product(name: "ASCII Primitives", package: "swift-ascii-primitives")
+    }
 }
 
 let package = Package(
@@ -22,21 +24,27 @@ let package = Package(
         .macOS(.v26),
         .iOS(.v26),
         .tvOS(.v26),
-        .watchOS(.v26)
+        .watchOS(.v26),
     ],
     products: [
         .library(name: "ISO 3166", targets: ["ISO 3166"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-primitives/swift-standard-library-extensions.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-ascii-primitives.git", branch: "main")
+        .package(
+            url: "https://github.com/swift-primitives/swift-standard-library-extensions.git",
+            branch: "main"
+        ),
+        .package(
+            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            branch: "main"
+        ),
     ],
     targets: [
         .target(
             name: "ISO 3166",
             dependencies: [
                 .standards,
-                .incits_4_1986
+                .incits_4_1986,
             ],
             exclude: [
                 "Resources"
@@ -45,7 +53,7 @@ let package = Package(
         .testTarget(
             name: "ISO 3166 Tests",
             dependencies: [
-                "ISO 3166",
+                "ISO 3166"
             ]
         ),
     ],
