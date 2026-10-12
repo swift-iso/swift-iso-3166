@@ -1,6 +1,6 @@
 extension ISO_3166.Alpha3 {
 
-    public enum Error: Swift.Error, Sendable, Equatable {
+    public enum Error: Swift::Error, Sendable, Equatable {
 
         case invalidCodeLength(Int)
 
