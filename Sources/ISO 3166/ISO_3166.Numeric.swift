@@ -61,7 +61,9 @@ extension ISO_3166.Numeric {
 
     public init(_ alpha2: ISO_3166.Alpha2) {
 
-        let numeric = ISO_3166.alpha2ToNumeric[alpha2]!
+        guard let numeric = ISO_3166.alpha2ToNumeric[alpha2] else {
+            preconditionFailure("Every alpha2 code has a mapping")
+        }
         self = numeric
     }
 }

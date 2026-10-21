@@ -64,13 +64,17 @@ extension ISO_3166.Alpha2 {
 
     public init(_ alpha3: ISO_3166.Alpha3) {
 
-        let alpha2 = ISO_3166.alpha3ToAlpha2[alpha3]!
+        guard let alpha2 = ISO_3166.alpha3ToAlpha2[alpha3] else {
+            preconditionFailure("Every alpha3 code has a mapping")
+        }
         self = alpha2
     }
 
     public init(_ numeric: ISO_3166.Numeric) {
 
-        let alpha2 = ISO_3166.numericToAlpha2[numeric]!
+        guard let alpha2 = ISO_3166.numericToAlpha2[numeric] else {
+            preconditionFailure("Every numeric code has a mapping")
+        }
         self = alpha2
     }
 }

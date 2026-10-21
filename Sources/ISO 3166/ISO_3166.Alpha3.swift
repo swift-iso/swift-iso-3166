@@ -64,7 +64,9 @@ extension ISO_3166.Alpha3 {
 
     public init(_ alpha2: ISO_3166.Alpha2) {
 
-        let alpha3 = ISO_3166.alpha2ToAlpha3[alpha2]!
+        guard let alpha3 = ISO_3166.alpha2ToAlpha3[alpha2] else {
+            preconditionFailure("Every alpha2 code has a mapping")
+        }
         self = alpha3
     }
 }
