@@ -3,7 +3,9 @@ import Testing
 
 @testable import ISO_3166
 
-extension ISO_3166 {
+enum `ISO_3166 Tests` {}
+
+extension `ISO_3166 Tests` {
     @Suite("ISO 3166 Country Codes")
     struct Tests {
         @Suite struct Unit {}
@@ -12,7 +14,7 @@ extension ISO_3166 {
     }
 }
 
-extension ISO_3166.Tests.Unit {
+extension `ISO_3166 Tests`.Tests.Unit {
 
     @Test
     func `Alpha2: Valid 2-letter codes`() throws {
@@ -315,7 +317,7 @@ extension ISO_3166.Tests.Unit {
     }
 }
 
-extension ISO_3166.Tests.`Edge Case` {
+extension `ISO_3166 Tests`.Tests.`Edge Case` {
 
     @Test
     func `ISO 3166: Edge case countries`() throws {
@@ -330,7 +332,7 @@ extension ISO_3166.Tests.`Edge Case` {
     }
 }
 
-extension ISO_3166.Tests.Integration {
+extension `ISO_3166 Tests`.Tests.Integration {
 
     @Test
     func `Conversion: Alpha2 to Alpha3 (total function)`() {
