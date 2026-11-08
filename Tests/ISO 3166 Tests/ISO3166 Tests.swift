@@ -6,7 +6,7 @@ import Testing
 enum `ISO_3166 Tests` {}
 
 extension `ISO_3166 Tests` {
-    @Suite("ISO 3166 Country Codes")
+    @Suite
     struct Tests {
         @Suite struct Unit {}
         @Suite struct `Edge Case` {}
