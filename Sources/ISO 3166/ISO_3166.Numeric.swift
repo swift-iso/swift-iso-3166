@@ -43,19 +43,21 @@ extension ISO_3166.Numeric: CustomStringConvertible {
     public var description: String { value }
 }
 
-extension ISO_3166.Numeric: Codable {
+#if !hasFeature(Embedded)
+    extension ISO_3166.Numeric: Codable {
 
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(value)
-    }
+        public func encode(to encoder: any Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(value)
+        }
 
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let string = try container.decode(String.self)
-        try self.init(string)
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            try self.init(string)
+        }
     }
-}
+#endif
 
 extension ISO_3166.Numeric {
 
