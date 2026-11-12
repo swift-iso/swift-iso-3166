@@ -31,7 +31,7 @@ extension ISO_3166.Code: CustomStringConvertible {
 extension ISO_3166.Code {
 
     public init(_ code: some StringProtocol) throws(ISO_3166.Error) {
-        guard code.allSatisfy(\.isASCII) else {
+        guard code.allSatisfy({ $0.isASCII }) else {
             throw ISO_3166.Error.invalidCharacters(String(code))
         }
 

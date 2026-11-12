@@ -8,7 +8,7 @@ extension ISO_3166 {
         public let value: String
 
         public init(_ value: some StringProtocol) throws(Error) {
-            guard value.allSatisfy(\.isASCII) else {
+            guard value.allSatisfy({ $0.isASCII }) else {
                 throw Alpha2.Error.invalidCharacters(String(value))
             }
 
