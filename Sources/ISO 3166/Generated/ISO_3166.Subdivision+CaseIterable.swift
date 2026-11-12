@@ -1,5 +1,5 @@
 extension ISO_3166.Subdivision: CaseIterable {
-    public static let allCases: [ISO_3166.Subdivision] = codes.split(whereSeparator: \.isWhitespace).map {
+    public static let allCases: [ISO_3166.Subdivision] = codes.split(whereSeparator: { $0.isWhitespace }).map {
         ISO_3166.Subdivision(unchecked: String($0))
     }
 }
